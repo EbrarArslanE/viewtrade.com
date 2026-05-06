@@ -1,0 +1,2 @@
+başlangıçta 
+nvm use 22 de node sürümü 20 den aşağıda çalışmıyor proje 
