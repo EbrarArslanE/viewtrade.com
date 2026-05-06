@@ -1,2 +1,7 @@
 başlangıçta 
-nvm use 22 de node sürümü 20 den aşağıda çalışmıyor proje 
+nvm use 22 
+npm create vite@latest .
+npm install
+npm run dev
+npm install axios react-router-dom
+node sürümü 20 den aşağıda çalışmıyor proje 
