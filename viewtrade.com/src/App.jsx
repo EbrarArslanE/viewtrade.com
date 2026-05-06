@@ -58,12 +58,12 @@ function App() {
 
             {/* Auth Butonları */}
             <div className="flex items-center bg-neon-green/5 border border-neon-green/30 rounded-full p-1">
-              <button onClick={() => setgirisYapAcikmi(true)} className="px-5 py-2 text-white text-[10px] font-black tracking-widest hover:bg-neon-green/20 rounded-full transition-all">
-                Giriş Yap
+              <button onClick={() => setgirisYapAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/20 active:scale-95 flex items-center rounded-01">
+                <i className='far fa-user mr-3'></i>Giriş Yap
               </button>
               <div className="h-4 w-[1px] bg-neon-green/30 mx-1"></div>
-              <button onClick={() => sethesapOlusturAcikmi(true)} className="px-5 py-2 text-white text-[10px] font-black tracking-widest hover:bg-neon-green/20 rounded-full transition-all">
-                Hesap Oluştur
+              <button onClick={() => sethesapOlusturAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/20 active:scale-95 flex items-center rounded-01">
+                <i className='fas fa-user-plus mr-3'></i>Hesap Oluştur
               </button>
             </div>
           </div>
@@ -78,8 +78,151 @@ function App() {
           </Routes>
         </main>
 
-        {/* Modallar (Giriş ve Hesap Oluştur - Kodun çok uzun olmaması için senin mantığını korudum) */}
-        {/* ... (Senin girisYapAcikmi ve hesapOlusturAcikmi modalların buraya gelecek) ... */}
+        <div className="flex items-center bg-neon-green/5 border border-neon-green/30 rounded-01 p-0.5 overflow-hidden">
+            {girisYapAcikmi && (
+              <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+                {/* Backdrop (Karartma ve Tıklayınca Kapatma) */}
+                <div 
+                  className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                  onClick={() => setgirisYapAcikmi(false)}
+                ></div>
+
+                {/* Modal Kartı */}
+                <div className="relative w-full max-w-md bg-[#1a1d1e] border border-white/10 rounded-[6px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+                  
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-white/5">
+                    <h3 className="text-white font-black text-sm tracking-[0.2em]">Giriş Yap</h3>
+                    <button onClick={() => setgirisYapAcikmi(false)} className="text-gray-500 hover:text-white transition-colors">
+                      <i className="fas fa-times text-lg"></i>
+                    </button>
+                  </div>
+
+                  <div className="p-6 space-y-6">
+                    {/* Tutar Girişi */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">T.C. Kimlik Numarası</label>
+                      <div className="relative">
+                        <input type="text" placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Ad</label>
+                        <input type="text" placeholder="Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Soyad</label>
+                        <input type="text" placeholder="Soyadınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Kullanıcı Adı</label>
+                      <div className="relative">
+                        <input type="text" placeholder="Kullanıcı Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre</label>
+                      <div className="relative">
+                        <input type="password" placeholder="Şifrenizi Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+
+                    {/* Onay Butonu */}
+                    <button className="w-full py-4 bg-neon-green rounded-01 text-white font-black hover:brightness-110 active:scale-[0.98] transition-all text-xs tracking-[0.3em]">
+                      Giriş Yap
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hesapOlusturAcikmi && (
+              <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+                {/* Backdrop (Karartma ve Tıklayınca Kapatma) */}
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-md"onClick={() => sethesapOlusturAcikmi(false)}></div>
+                {/* Modal Kartı */}
+                <div className="relative w-full max-w-md bg-[#1a1d1e] border border-white/10 rounded-[6px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+                  
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-white/5">
+                    <h3 className="text-white font-black text-sm tracking-[0.2em]">Hesap Oluştur</h3>
+                    <button onClick={() => sethesapOlusturAcikmi(false)} className="text-gray-500 hover:text-white transition-colors">
+                      <i className="fas fa-times text-lg"></i>
+                    </button>
+                  </div>
+
+                  <div className="p-6 space-y-6">
+                    {/* Tutar Girişi */}
+                    <div className='flex w-full gap-4'>
+                      <div className='w-[60%]'>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">T.C. Kimlik Numarası</label>
+                          <div className="relative">
+                            <input type="text" placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='w-[40%]'>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Doğum Tarihi</label>
+                          <div className="relative">
+                            <input type="date" placeholder="gg.aa.yyyy" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Ad</label>
+                        <input type="text" placeholder="Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Soyad</label>
+                        <input type="text" placeholder="Soyadınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Kullanıcı Adı</label>
+                      <div className="relative">
+                        <input type="text" placeholder="Kullanıcı Adınızı Oluşturun..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre</label>
+                      <div className="relative">
+                        <input type="password" placeholder="Şifrenizi Oluşturun..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre Tekrar</label>
+                      <div className="relative">
+                        <input type="password" placeholder="Şifrenizi Tekrar Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      </div>
+                    </div>
+                      
+                    </div>  
+
+                    {/* Onay Butonu */}
+                    <button className="w-full py-4 bg-neon-green rounded-01 text-white font-black hover:brightness-110 active:scale-[0.98] transition-all text-xs tracking-[0.3em]">
+                      Hesap Oluştur
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}   
+        </div>
 
       </div>
     </Router>
