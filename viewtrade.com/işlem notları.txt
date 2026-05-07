@@ -1,0 +1,13 @@
+Önemli
+coinPage.jsx ve exchangePage.jsx bunlar bireysel olarak detay sayfaları, 
+headerdaki arama inputundan veri arandıktan sonra tıklandığında;
+kripto ise coinPage.jsx,
+borsa kağıdı ise exchangePage.jsx e 
+yönlendirecek ve bilgileri dolduracak
+
+
+
+coinMarketPage.jsx te ufak tefek filtre işlemleri var - şu anda coinPage ile uğraşıyorum o yüzden onu dondurdum sonrasında bakacağım
+
+
+coinPage.jsx içerisinde şu an da bir symbol olmadığı için veriler gelmiyor inputtan arama yapıldığında seçilen kayıt verilecek

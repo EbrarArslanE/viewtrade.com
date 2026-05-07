@@ -95,3 +95,44 @@
 .rounded-3 { border-radius: 30px; }
 .rounded-4 { border-radius: 40px; }
 .rounded-5 { border-radius: 50px; }
+
+/* En Koyu - Dış çerçeveler veya en alt katman için */
+.border-line-1 { border: 1px solid #1A1F21; } 
+
+/* Orta Koyu - İç kutular veya hover öncesi durumlar */
+.border-line-2 { border: 1px solid #2A3335; } 
+
+/* Orta Açık - Odaklanılan (Active) alanlar veya kart sınırları */
+.border-line-3 { border: 1px solid #3B4A4E; } 
+
+/* En Açık - Parlayan (Highlight) veya üstte duran küçük detaylar */
+.border-line-4 { border: 1px solid #4D6268; } 
+
+/* Parliament Dokunuşu - Senin o meşhur renginle vurgu yapmak istersen */
+.border-line-special { border: 1px solid #73b2c0; }
+
+
+/* Scrollbar Genişliği */
+::-webkit-scrollbar {
+  width: 5px; /* İncecik olsun, rahatsız etmesin */
+  height: 5px;
+}
+
+/* Scrollbar Yolu (Track) */
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02); /* Çok hafif belli belirsiz */
+  border-radius: 10px;
+}
+
+/* Kayan Çubuk (Thumb) */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); /* Beyazın çok şeffaf hali */
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+/* Üzerine gelince biraz daha belirginleşsin */
+::-webkit-scrollbar-thumb:hover {
+  background: #003366; /* Senin o meşhur Parliament mavisi! */
+  box-shadow: 0 0 10px rgba(0, 51, 102, 0.5);
+}

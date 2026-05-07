@@ -42,7 +42,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
   
 
-function App() {
+function ExchangeDetailPage() {
   // Fonksiyonlar
   const [acikMenu, setAcikMenu] = useState(null);
 
@@ -203,35 +203,6 @@ function App() {
 
         {/* Sağ Panel */}
         <div className="col-span-12 xl:col-span-4 space-y-6">
-          {/* Takip Listesi (Watchlist) */}
-          <div className="viewtrade-glass rounded-01 p-6">
-            <h3 className="text-[16px] font-black text-white mb-6">Gündemdeki Coinler</h3>
-            <div className="space-y-4">
-              {Object.keys(piyasa).map((coin) => (
-                <div key={coin} onClick={() => setSeciliCoin(coin)} className="flex justify-between items-center p-3 hover:bg-blue-400/10 rounded-xl transition-all border border-transparent hover:border-blue-400/20 group cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <i className='fas fa-heart'></i>
-                    <div className={`w-1 h-8 rounded-full transition-colors duration-500 ${ piyasa[coin].degisim >= 0 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'  }`}></div>
-                    <div>
-                      <p className="font-bold text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">{coin} / USDT</p>
-                      <p className="text-[9px] text-blue-300/40 font-mono">{coin === 'BTC' ? 'Bitcoin Core' : coin === 'ETH' ? 'Ethereum L1' : 'Altcoin Index'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="text-sm font-mono font-bold text-blue-100">
-                      ${piyasa[coin].fiyat}
-                    </p>
-                    <p className={`text-[10px] font-bold ${piyasa[coin].degisim >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {piyasa[coin].degisim >= 0 ? '+' : ''}{piyasa[coin].degisim}%
-                    </p>
-                  </div>
-                  
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Hızlı İşlem Paneli */}
           <div className="bg-gradient-to-br from-neon-green/10 to-transparent border border-neon-green/20 rounded-01 p-6">
             <p className="text-[12px] font-mono text-neon-green mb-4 opacity-70 tracking-tighter">Hızlı İşlemler</p>
@@ -272,4 +243,4 @@ function App() {
   );
 }
 
-export default App;
+export default ExchangeDetailPage;

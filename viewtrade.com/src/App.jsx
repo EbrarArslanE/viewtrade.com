@@ -3,9 +3,15 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 import WelcomePage from "./pages/WelcomePage.jsx";
 import PortfolioPage from "./pages/PortfolioPage.jsx";
+import CoinMarketPage from "./pages/CoinMarketPage.jsx";
+import StockMarketPage from "./pages/StockMarketPage.jsx";
+
+import CoinDetailPage from "./pages/coinPage.jsx";
+import ExchangeDetailPage from "./pages/exchangePage.jsx";
 
 function App() {
   const [acikMenu, setAcikMenu] = useState(null);
+  // const [arananCoinBorsa, setarananCoinBorsa] = useState(null); henüz kullanılmıyor fakat coin borsa ara inputunda kullanılacak olan input bu değişkene bakacak
   const [girisYapAcikmi, setgirisYapAcikmi] = useState(false);
   const [hesapOlusturAcikmi, sethesapOlusturAcikmi] = useState(false);
     
@@ -29,7 +35,7 @@ function App() {
           {/* Arama Çubuğu */}
           <div className="hidden md:flex gap-6 mr-6 text-xs font-bold text-gray-400">
             <div className="flex h-[34px] text-[14px] text-white/60">
-              <input className="input w-[400px] lg:w-[600px] bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-l-lg border border-white/10 focus:outline-none focus:ring-1 focus:ring-neon-green transition-all" type="text" placeholder="Coin Ara..." />
+              <input className="input w-[400px] lg:w-[600px] bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-l-lg border border-white/10 focus:outline-none focus:ring-1 focus:ring-neon-green transition-all" type="text" placeholder="Coin - Borsa Ara..." />
               <button className="text-[#f4f4f5] px-3 py-1 rounded-r-lg border-y border-r border-white/10 hover:bg-zinc-800/40 transition-all">
                 <i className='fas fa-search'></i>
               </button>
@@ -49,20 +55,40 @@ function App() {
                 </span>
                 {acikMenu === 'piyasalar' && (
                    <div className="absolute top-full left-0 mt-4 w-48 bg-[#1a1d1e] border border-white/10 rounded-lg py-2 shadow-2xl animate-in fade-in slide-in-from-top-2">
+                    <Link to="/markets/coin">
                       <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Coin Piyasası</div>
+                    </Link>
+                    <Link to="/markets/stock">
                       <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Borsa Piyasası</div>
+                    </Link>
                    </div>
                 )}
               </div>
+              {/* <div className="relative group cursor-pointer" onClick={() => setAcikMenu(acikMenu === 'hizliListeler' ? null : 'hizliListeler')}>
+                <span className="flex items-center gap-1 hover:text-neon-green transition-colors">
+                  Hızlı Listeler <i className={`fas fa-chevron-down text-[8px] transition-transform ${acikMenu === 'hizliListeler' ? 'rotate-180' : ''}`}></i>
+                </span>
+                {acikMenu === 'hizliListeler' && (
+                   <div className="absolute top-full left-0 mt-4 w-48 bg-[#1a1d1e] border border-white/10 rounded-lg py-2 shadow-2xl animate-in fade-in slide-in-from-top-2">
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Popüler</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Kazandıranlar</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Kaybettirenler</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">En Yüksek Piyasa Değeri</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">En Düşük Piyasa Değeri</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">En Yüksek Fiyat</div>
+                      <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">En Düşük Fiyat</div>
+                   </div>
+                )}
+              </div> */}
             </nav>
 
             {/* Auth Butonları */}
             <div className="flex items-center bg-neon-green/5 border border-neon-green/30 rounded-full p-1">
-              <button onClick={() => setgirisYapAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/20 active:scale-95 flex items-center rounded-01">
+              <button onClick={() => setgirisYapAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/30 active:scale-95 flex items-center rounded-full">
                 <i className='far fa-user mr-3'></i>Giriş Yap
               </button>
               <div className="h-4 w-[1px] bg-neon-green/30 mx-1"></div>
-              <button onClick={() => sethesapOlusturAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/20 active:scale-95 flex items-center rounded-01">
+              <button onClick={() => sethesapOlusturAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/30 active:scale-95 flex items-center rounded-full">
                 <i className='fas fa-user-plus mr-3'></i>Hesap Oluştur
               </button>
             </div>
@@ -74,6 +100,10 @@ function App() {
           <Routes>
             <Route path="/" element={<WelcomePage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/markets/coin" element={<CoinMarketPage />} />
+            <Route path="/markets/stock" element={<StockMarketPage />} />
+            <Route path="/detail/coin" element={<CoinDetailPage />} />
+            <Route path="/detail/exchange" element={<ExchangeDetailPage />} />
             <Route path="*" element={<div className="text-center pt-20">404 - Not Found</div>} />
           </Routes>
         </main>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 // 1. ADIM: Grafik bileşeni her zaman ANA BİLEŞENİN DIŞINDA olmalı
@@ -40,9 +41,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
     );
   };
 
-  
-
-function App() {
+function coinDetailPage() {
   // Fonksiyonlar
   const [acikMenu, setAcikMenu] = useState(null);
 
@@ -60,48 +59,42 @@ function App() {
     AVAX: "Avalanche"
   };
   
-  const [seciliCoin, setSeciliCoin] = React.useState("BTC");
+// 1. ADIM: coins state'ini tanımladığından emin ol
+  const [coins, setCoins] = React.useState([]); 
+  const [seciliCoin, setSeciliCoin] = React.useState(null); // String değil, OBJE tutacağız
 
-  React.useEffect(() => {
-    let socket;
-    
-    const connect = () => {
-      // Combined stream URL: Hepsini tek boru hattına bağladık
-      const url = 'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker/avaxusdt@ticker';
-      socket = new WebSocket(url);
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
+        
+        const filterCoins = response.data
+          .filter(c => c.symbol.endsWith('USDT'))
+          .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
+          .slice(0, 20);
+        
+        setCoins(filterCoins);
+        setLoading(false);
 
-      socket.onmessage = (event) => {
-        const zarf = JSON.parse(event.data);
-        const veri = zarf.data; // Asıl fiyat verisi burada
-        const coinSembol = zarf.stream.split('usdt')[0].toUpperCase(); // Örn: "BTC"
+        // 🍏 2. ADIM: Canlı güncelleme büyüsü
+        // Eğer zaten bir coin seçiliyse, yeni gelen datalar arasından onu bul ve güncelle
+        if (seciliCoin) {
+          const guncelVeri = filterCoins.find(c => c.symbol === seciliCoin.symbol);
+          if (guncelVeri) setSeciliCoin(guncelVeri);
+        } else {
+          // Sayfa ilk açıldığında en üstteki coini (genelde BTC) seçili yap
+          setSeciliCoin(filterCoins[0]);
+        }
 
-        // Sadece değişen coini güncelle, diğerlerini korur (Immutability - Sürdürülebilirlik)
-        setPiyasa(onceki => ({
-          ...onceki,
-          [coinSembol]: {
-            fiyat: parseFloat(veri.c).toLocaleString('en-US', { minimumFractionDigits: 2 }),
-            degisim: parseFloat(veri.P)
-          }
-        }));
-      };
-
-      socket.onerror = (err) => console.error("Bağlantı Hatası:", err);
-
-      socket.onclose = () => {
-        console.log("Soket kapandı, tekrar bağlanıyor...");
-        setTimeout(connect, 3000);
-      };
-    };
-
-    connect();
-
-    return () => {
-      if (socket) {
-        socket.onclose = null; 
-        socket.close();
+      } catch (error) {
+        console.error("Market verisi çekilemedi Cimi:", error);
       }
     };
-  }, []);
+
+    fetchMarketData();
+    const interval = setInterval(fetchMarketData, 5000); // 5 saniye daha iyi, hız kazandırır
+    return () => clearInterval(interval);
+  }, [seciliCoin?.symbol]); // Seçili coin değişince takibi bırakma
 
   const [bakiyeYukleAcikMi, setbakiyeYukleAcikMi] = React.useState(false);
   const [cardNumber, setCardNumber] = React.useState('');
@@ -158,8 +151,6 @@ function App() {
   
     return (
     <div className="min-h-screen p-4 md:p-8 font-sans selection:bg-neon-green selection:text-black bg-cyber-black text-white">
-      {/* Üst Bar / Navigasyon */}
-
       {/* Ana Ekran Izgarası */}
       <div className="grid grid-cols-12 gap-6">
         
@@ -203,39 +194,25 @@ function App() {
 
         {/* Sağ Panel */}
         <div className="col-span-12 xl:col-span-4 space-y-6">
-          {/* Takip Listesi (Watchlist) */}
-          <div className="viewtrade-glass rounded-01 p-6">
-            <h3 className="text-[16px] font-black text-white mb-6">Gündemdeki Coinler</h3>
-            <div className="space-y-4">
-              {Object.keys(piyasa).map((coin) => (
-                <div key={coin} onClick={() => setSeciliCoin(coin)} className="flex justify-between items-center p-3 hover:bg-blue-400/10 rounded-xl transition-all border border-transparent hover:border-blue-400/20 group cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <i className='fas fa-heart'></i>
-                    <div className={`w-1 h-8 rounded-full transition-colors duration-500 ${ piyasa[coin].degisim >= 0 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'  }`}></div>
-                    <div>
-                      <p className="font-bold text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">{coin} / USDT</p>
-                      <p className="text-[9px] text-blue-300/40 font-mono">{coin === 'BTC' ? 'Bitcoin Core' : coin === 'ETH' ? 'Ethereum L1' : 'Altcoin Index'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="text-sm font-mono font-bold text-blue-100">
-                      ${piyasa[coin].fiyat}
-                    </p>
-                    <p className={`text-[10px] font-bold ${piyasa[coin].degisim >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {piyasa[coin].degisim >= 0 ? '+' : ''}{piyasa[coin].degisim}%
-                    </p>
-                  </div>
-                  
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Hızlı İşlem Paneli */}
           <div className="bg-gradient-to-br from-neon-green/10 to-transparent border border-neon-green/20 rounded-01 p-6">
-            <p className="text-[12px] font-mono text-neon-green mb-4 opacity-70 tracking-tighter">Hızlı İşlemler</p>
+            <p className="text-[12px] font-mono text-neon-green mb-4 opacity-70 tracking-tighter">Kripto Bilgileri</p>
               
+            <div className="flex flex-col items-start pb-5 justify-start gap-6">
+              <p className="font-bold text-xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">-</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Fiyat Değişimi: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son 24 Saat içerisindeki değişimi: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Ağırlıklı Ortalama: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Önceki Kapanış: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son Fiyat: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son İşlem Miktarı: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son İşlem Miktarı: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Açılış - Kapanış Zamanı: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son 24 Saatteki işlem sayısı: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son 24 Saatteki Değişim Oranı: {seciliCoin?.priceChange}</p>
+              <p className="text-sm tracking-tighter text-white group-hover:text-blue-400 transition-colors">Son 24 Saatteki Değişim Oranı: {seciliCoin?.priceChange}</p>
+            </div>
+
             <div className="flex items-center pb-5 justify-start gap-6">
               <p className="font-bold text-xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">{seciliCoin}</p>
               <p className="font-bold text-xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">-</p>
@@ -266,10 +243,11 @@ function App() {
           </div>
           
         </div>
+      
       </div>
       {/* <span>Powered by Ebrar Arslan</span> */}
     </div>
   );
 }
 
-export default App;
+export default coinDetailPage;

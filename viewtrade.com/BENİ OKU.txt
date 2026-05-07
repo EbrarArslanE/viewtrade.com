@@ -5,3 +5,11 @@ npm install
 npm run dev
 npm install axios react-router-dom
 node sürümü 20 den aşağıda çalışmıyor proje 
+
+
+bunuda nazıma at
+
+https://codepen.io/themrsami/pen/KwKeXdm
+
+
+
