@@ -16,7 +16,6 @@
   body {
     background-color: var(--background-color);
     color: white;
-    cursor: crosshair; /* Borsa terminali havası versin */
   }
 }
 
