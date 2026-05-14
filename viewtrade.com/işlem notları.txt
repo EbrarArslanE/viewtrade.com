@@ -11,3 +11,72 @@ coinMarketPage.jsx te ufak tefek filtre işlemleri var - şu anda coinPage ile u
 
 
 coinPage.jsx içerisinde şu an da bir symbol olmadığı için veriler gelmiyor inputtan arama yapıldığında seçilen kayıt verilecek TAMAMLANDI
+
+kripto tarafında kalan işlemler:
+Favorilere ekleme
+Filtreleme alanlarının doldurulması
+satın al sat fonksiyonları
+
+borsa tarafında kalan işlemler:
+Borsaların apilerinin çekilip listeye basılması 
+satın al ve sat fonksiyonları
+borsa filtresi
+markaların logolarının kalemlerin yanına yansıtılması
+
+Sistem üzerinde yapılması gereken işlemler: 
+Kullanıcıları yönetebilmek için bir panel
+kullanıcı girişi - hesap oluşturması
+kullanıcı giriş yaptığı zaman portföyünün iki ye (kripto varlıklarım ve borsa varlıklarım) olarak ikiye ayrılması
+headerdaki master search inputun yanındaki search iconu değiştirilebilir olacak ve kripto ve borsa (crypto ve stock) olarak değiştirilecek
+
+Express.js: Server'ı ayağa kaldırmak için.
+
+Mongoose: MongoDB ile konuşurken işimizi kolaylaştıracak, "şema" gibi davranan ama bizi kısıtlamayan efsane kütüphane.
+
+JWT (jsonwebtoken): Kullanıcıyı "hatırlamak" için.
+
+
+
+Backende bağlantı kurulduğunda hazırlanması gereken servisler
+
+🛡️ 1. Auth Servisleri (Kimlik ve Güvenlik)
+Kullanıcının sisteme ilk adım attığı ve "pasaportunu" (token) aldığı yer.
+
+POST /api/auth/register: Kullanıcı oluşturma. (İsim, soyisim, TC, kullanıcı adı ve bcrypt ile şifrelenmiş parola).
+
+POST /api/auth/login: Giriş işlemi. Kullanıcı adı ve şifre kontrolü doğruysa bir JWT döner.
+
+GET /api/auth/me: Tarayıcı yenilendiğinde "bu adam kimdi?" diye kontrol eden servis. Header'daki token'dan kullanıcı bilgisini döner.
+
+💰 2. Portföy ve Varlık Servisleri (Cüzdanın Kalbi)
+Kullanıcının varlıklarını kripto ve borsa olarak ikiye ayıran, "split portfolio" dediğimiz yapı.
+
+GET /api/portfolio: Kullanıcının tüm varlıklarını (crypto_assets ve stock_assets) ve toplam bakiyesini döner.
+
+POST /api/portfolio/trade: Al-Sat motoru. Parametre olarak type (crypto/stock), symbol, amount ve side (buy/sell) alır.
+
+Logic: Alım yapıyorsa bakiyeden düşer, satım yapıyorsa bakiyeye ekler.
+
+GET /api/portfolio/history: Kullanıcının geçmiş işlemlerini listeler. "Hangi fiyattan ne almıştım?" sorusunun cevabı.
+
+⭐ 3. Favoriler ve İzleme Listesi (Customization)
+Kullanıcının her seferinde arama yapmasını engelleyen o "hızlı erişim" alanı.
+
+GET /api/favorites: Kullanıcının favoriye eklediği tüm sembolleri döner.
+
+POST /api/favorites/toggle: Sembol listede varsa siler, yoksa ekler. (Tek servis iki iş).
+
+📰 4. Market & Data Proxy (Backend Aracıları)
+Frontend'den API key'leri saklamak ve veriyi düzenlemek için Node.js'i aracı olarak kullanacağız.
+
+GET /api/market/news/:symbol: Finnhub'dan o sembole ait haberleri çeker ve temizleyip frontend'e basar.
+
+GET /api/market/stocks: Borsa listesini ve logolarını (Clearbit vs.) birleştirip hazır paket olarak döner.
+
+⚙️ 5. Admin Panel Servisleri (Yönetim Masası)
+Sadece senin (admin) göreceğin, sistemi kontrol ettiğin yer.
+
+GET /api/admin/users: Sistemdeki tüm kullanıcıları ve toplam işlem hacimlerini listeler.
+
+POST /api/admin/broadcast: Tüm kullanıcılara veya ekranlara "Piyasa çok hareketli!" gibi bildirim/not göndermek için.
+

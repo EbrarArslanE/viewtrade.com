@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 // Sayfaların importları
 import WelcomePage from "./pages/WelcomePage.jsx";
@@ -12,12 +13,14 @@ import CoinDetailPage from "./pages/coinPage.jsx";
 import ExchangeDetailPage from "./pages/exchangePage.jsx";
 
 // 🍏 TÜM MANTIK BURADA: useNavigate artık Router'ın içinde olduğu için çalışacak
+
 function ViewTradeTerminal() {
 const navigate = useNavigate();
   
   const [acikMenu, setAcikMenu] = useState(null);
   const [girisYapAcikmi, setgirisYapAcikmi] = useState(false);
   const [hesapOlusturAcikmi, sethesapOlusturAcikmi] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -70,6 +73,60 @@ const navigate = useNavigate();
     setIsDropdownOpen(false);
     setSearchQuery("");
   };
+  
+  const [girisYapildiMi, setGirisYapildiMi] = useState(false);
+  const [kullaniciGirisiDogrulandiMi, setkullaniciGirisiDogrulandiMi] = useState(false);
+  
+  const [girisTC, setGirisTC] = useState("");
+  const [girisKullaniciAdi, setGirisKullaniciAdi] = useState("");
+  const [girisSifre, setGirisSifre] = useState("");
+  
+  const [kayitTC, setkayitTC] = useState("");
+  const [kayitKullaniciAdi, setkayitKullaniciAdi] = useState("");
+  const [kayitSifre, setkayitSifre] = useState("");
+  
+
+    useEffect(() => {
+      console.log("Giriş Durumu:", girisYapildiMi);
+      console.log("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+      console.log("Giriş TC:", girisTC);
+      console.log("Giriş Kullanıcı adı:", girisKullaniciAdi);
+      console.log("Giriş Şifre:", girisSifre);
+    }, [girisYapildiMi]);
+
+    const girisYap = () => {
+      // 1. Önce kontrolü yapıyoruz
+      if (girisTC.trim() !== "" && girisKullaniciAdi.trim() !== "" && girisSifre.trim() !== "") {
+        
+        // 2. State'leri güncelle
+        setGirisYapildiMi(true);
+        setkullaniciGirisiDogrulandiMi(true);
+        
+        // 3. Modal'ı veya giriş penceresini kapat (Hemen burada yap!)
+        setgirisYapAcikmi(false); 
+        
+        // 4. Başarı mesajını patlat
+        toast.success("Giriş Başarılı! Yönlendiriliyorsunuz.", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+        });
+        
+      } else {
+        // 5. Hata durumu
+        toast.error("Lütfen bütün alanları eksiksiz doldurun.", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+        });
+      }
+    };
+
+    // const girisKontrol () = => {
+    //   if (setGirisYapildiMi === true) {
+    //     setgirisYapAcikmi(false)
+    //   }
+    // }
 
   return (
     <div className="min-h-screen text-white bg-cyber-black font-sans">
@@ -220,42 +277,29 @@ const navigate = useNavigate();
                 </div>
 
                 <div className="p-6 space-y-6">
-                  {/* Tutar Girişi */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">T.C. Kimlik Numarası</label>
                     <div className="relative">
-                      <input type="text" placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Ad</label>
-                      <input type="text" placeholder="Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Soyad</label>
-                      <input type="text" placeholder="Soyadınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      <input type="text" value={girisTC} onChange={(e) => setGirisTC(e.target.value)} placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Kullanıcı Adı</label>
                     <div className="relative">
-                      <input type="text" placeholder="Kullanıcı Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      <input type="text" value={girisKullaniciAdi} onChange={(e) => setGirisKullaniciAdi(e.target.value)} placeholder="Kullanıcı Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre</label>
                     <div className="relative">
-                      <input type="password" placeholder="Şifrenizi Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      <input type="password" value={girisSifre} onChange={(e) => setGirisSifre(e.target.value)} placeholder="Şifrenizi Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
                   {/* Onay Butonu */}
-                  <button className="w-full py-4 bg-neon-green rounded-01 text-white font-black hover:brightness-110 active:scale-[0.98] transition-all text-xs tracking-[0.3em]">
+                  <button onClick={girisYap} id="girisYapButton" className="w-full py-4 bg-neon-green rounded-01 text-white font-black hover:brightness-110 active:scale-[0.98] transition-all text-xs tracking-[0.3em]" >
                     Giriş Yap
                   </button>
                 </div>
@@ -266,7 +310,7 @@ const navigate = useNavigate();
           {hesapOlusturAcikmi && (
             <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
               {/* Backdrop (Karartma ve Tıklayınca Kapatma) */}
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-md"onClick={() => sethesapOlusturAcikmi(false)}></div>
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => sethesapOlusturAcikmi(false)}></div>
               {/* Modal Kartı */}
               <div className="relative w-full max-w-md bg-[#1a1d1e] border border-white/10 rounded-[6px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
                 
@@ -354,6 +398,7 @@ function App() {
   return (
     <Router>
       <ViewTradeTerminal />
+      <ToastContainer theme="dark" />
     </Router>
   );
 }

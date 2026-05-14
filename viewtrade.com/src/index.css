@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import 'react-toastify/dist/ReactToastify.css';
 /* 🍏 Kendi Özel Temamız ve Değişkenlerimiz */
 @theme {
   --color-neon-green: #3B7597;
