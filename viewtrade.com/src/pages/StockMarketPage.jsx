@@ -60,7 +60,7 @@ const StockMarketPage = () => {
   const enCokAzalan = [...stocks].sort((a, b) => a.priceChangePercent - b.priceChangePercent)[0];
 
   return (
-    <div className="w-full min-h-screen bg-[#1a1d1e] text-white pb-10 px-8 font-sans">
+    <div className="w-full min-h-screen bg-[#1a1d1e] text-white pb-10 px-8 font-cyber-tech">
 
       {/* 🍏 İSTATİSTİK KARTLARI */}
       <div className="grid grid-cols-12 gap-6 pt-8 mb-8">

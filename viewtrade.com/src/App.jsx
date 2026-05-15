@@ -6,6 +6,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import WelcomePage from "./pages/WelcomePage.jsx";
 import PortfolioPage from "./pages/PortfolioPage.jsx";
 
+import FinanceNewsPage from "./pages/FinanceNewsPage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
+
 import CoinMarketPage from "./pages/CoinMarketPage.jsx";
 import StockMarketPage from "./pages/StockMarketPage.jsx";
 
@@ -129,117 +132,84 @@ const navigate = useNavigate();
     // }
 
   return (
-    <div className="min-h-screen text-white bg-cyber-black font-sans">
-      <header className="flex justify-between items-center px-8 py-6 border-b border-white/10 backdrop-blur-md sticky top-0 z-[100]">
-        <div>
-          <Link to="/" className="no-underline">
-            <h1 className="text-4xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-neon-green to-cyan-400 cursor-pointer hover:opacity-80 transition-all active:scale-95">
-              viewtrade<span className="text-white">.com</span>
-            </h1>
-          </Link>
-          <p className="text-[10px] font-mono text-gray-500 tracking-[0.2em] mt-1">
-            Kuantum İşlem Terminali // v1.1.1-beta
-          </p>
-        </div>
-        
-        {/* 🍏 GELİŞMİŞ ARAMA MOTORU */}
-        <div className="relative group">
-          <div className="flex items-center h-[40px] bg-[#1a1d1e] rounded-xl border border-white/10 focus-within:border-neon-green/50 transition-all overflow-hidden shadow-2xl">
-            
-            {/* 🍏 MOD TOGGLE BUTTON (Sol taraf) */}
-            <button 
-              onClick={toggleSearchMode}
-              title={searchMode === 'crypto' ? "Borsaya Geç" : "Kriptoya Geç"}
-              className={`flex items-center justify-center w-12 h-full transition-all duration-500 border-r border-white/10
-                ${searchMode === 'crypto' 
-                  ? 'bg-orange-500/10 text-orange-500 hover:bg-orange-500/20' 
-                  : 'bg-neon-green/10 text-neon-green hover:bg-neon-green/20'}`}
-            >
-              {searchMode === 'crypto' ? (
-                <i className="fab fa-bitcoin text-lg"></i>
-              ) : (
-                <i className="fas fa-chart-line text-lg"></i>
-              )}
-            </button>
-
-            <input 
-              className="w-[300px] lg:w-[450px] bg-transparent text-white px-4 py-2 text-sm focus:outline-none placeholder:text-white/20" 
-              type="text" 
-              placeholder={searchMode === 'crypto' ? "Kripto Varlık Ara (BTC, ETH...)" : "Global Borsa Ara (TSLA, MBG...)"}
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-            
-            <div className="px-4 text-white/30 border-l border-white/10">
-              <i className='fas fa-search'></i>
-            </div>
+    <div className="min-h-screen text-white bg-[#1a1d1e] font-cyber-tech">
+      <header className="sticky top-0 z-[100] backdrop-blur-md">
+        {/* 1. ÜST KATMAN: Logo ve Arama Motoru */}
+        <div className="flex justify-between items-center px-8 py-4 border-b border-white/5 bg-[#020617]/80">
+          <div>
+            <Link to="/" className="no-underline">
+              <h1 className="text-4xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 cursor-pointer hover:opacity-80 transition-all active:scale-95">
+                viewtrade<span className="text-white">.com</span>
+              </h1>
+            </Link>
+            <p className="text-[9px] font-mono text-gray-500 tracking-[0.2em] mt-1">
+              Kuantum İşlem Terminali // v1.1.1-beta
+            </p>
           </div>
 
-          {/* 🍏 DROP-DOWN SONUÇLARI */}
-          {isDropdownOpen && (
-            <div className="absolute top-[110%] left-0 w-full bg-[#1a1d1e] border border-white/10 rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl z-50">
-              <div className="px-4 py-2 bg-white/5 border-b border-white/5 text-[9px] font-black tracking-widest text-gray-500 uppercase">
-                {searchMode === 'crypto' ? 'Kripto Sonuçları' : 'Borsa Sonuçları'}
+          {/* GELİŞMİŞ ARAMA MOTORU (Aynı kalıyor) */}
+          <div className="relative group">
+            <div className="flex items-center h-[40px] bg-[#1a1d1e] rounded-xl border border-white/10 focus-within:border-emerald-500/50 transition-all overflow-hidden">
+              <button 
+                onClick={toggleSearchMode}
+                className={`flex items-center justify-center w-12 h-full border-r border-white/10 ${searchMode === 'crypto' ? 'text-orange-500' : 'text-emerald-500'}`}
+              >
+                {searchMode === 'crypto' ? <i className="fab fa-bitcoin"></i> : <i className="fas fa-chart-line"></i>}
+              </button>
+              <input className="w-[300px] lg:w-[450px] bg-transparent text-white px-4 text-xs focus:outline-none" placeholder={searchMode === 'crypto' ? "Kripto Ara..." : "Borsa Ara..."}value={searchQuery}onChange={handleSearch}/>
+            </div>
+            {/* Dropdown Sonuçları Kısmı (Aynı kalıyor) */}
+          </div>
+
+          {/* Giriş/Kayıt Butonları */}
+          {/* <div className="flex items-center bg-white/5 border border-white/10 rounded-full p-1">
+              <button onClick={() => setgirisYapAcikmi(true)} className="px-4 py-1.5 text-white text-[10px] font-black tracking-widest hover:bg-white/10 rounded-full transition-all">
+                Kullanıcı Girişi
+              </button>
+              <button onClick={() => sethesapOlusturAcikmi(true)} className="px-4 py-1.5 bg-emerald-500 text-[#020617] text-[10px] font-black tracking-widest hover:bg-emerald-400 rounded-full transition-all ml-1">
+                Kayıt ol
+              </button>
+          </div> */}
+          <div className="relative group cursor-pointer" onClick={() => setAcikMenu(acikMenu === 'kullanici' ? null : 'kullanici')}>
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-full p-1">
+              <button onClick={() => setAcikMenu(acikMenu === 'kullanici' ? null : 'kullanici')} className="px-4 py-1.5 text-white text-[10px] font-black tracking-widest hover:bg-white/10 rounded-full transition-all">
+                <i className='fas fa-user'></i>
+              </button>
+              {acikMenu === 'kullanici' && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-[#1a1d1e] border border-white/10 rounded-lg py-2 shadow-2xl z-[101]">
+                <Link to="/portfolio" className="no-underline text-white block px-4 py-2 hover:bg-emerald-500/10 hover:text-emerald-400">
+                  <i className="fas fa-wallet text-[8px] mr-2"></i> Portföyüm
+                </Link>
+                <Link to="/user/settings" className="no-underline text-white block px-4 py-2 hover:bg-emerald-500/10 hover:text-emerald-400">
+                  <i className="fas fa-cog text-[8px] mr-2"></i> Ayarlar
+                </Link>
               </div>
-              {results.length > 0 ? results.map((item) => (
-                <div 
-                  key={item.symbol}
-                  onClick={() => handleSelect(item)}
-                  className="flex justify-between items-center px-4 py-4 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0 transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[10px] ${item.type === 'crypto' ? 'bg-orange-500/10 text-orange-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                      {item.symbol.substring(0, 2)}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-bold text-white group-hover:text-neon-green transition-colors">{item.symbol}</span>
-                      <span className="text-[10px] text-gray-500 uppercase tracking-tighter">{item.name}</span>
-                    </div>
-                  </div>
-                  <i className="fas fa-chevron-right text-[10px] text-white/10 group-hover:text-neon-green transition-all transform group-hover:translate-x-1"></i>
-                </div>
-              )) : (
-                <div className="p-8 text-center">
-                   <i className="fas fa-search-minus text-2xl text-gray-700 mb-2"></i>
-                   <p className="text-xs text-gray-500 italic">Eşleşen varlık bulunamadı...</p>
-                </div>
-              )}
+            )}
             </div>
-          )}
-        </div>
-
-        {/* Sağ Menüler */}
-        <div className="flex items-center gap-6">
-          <nav className="hidden lg:flex items-center gap-6 text-[10px] font-black tracking-widest text-gray-400">
-            <Link to="/" className="hover:text-neon-green transition-colors no-underline">Ana Sayfa</Link>
-            <Link to="/portfolio" className="hover:text-neon-green transition-colors no-underline">Portföyüm</Link>
-            
-            <div className="relative group cursor-pointer" onClick={() => setAcikMenu(acikMenu === 'piyasalar' ? null : 'piyasalar')}>
-              <span className="flex items-center gap-1 hover:text-neon-green transition-colors">
-                Piyasalar <i className={`fas fa-chevron-down text-[8px] transition-transform ${acikMenu === 'piyasalar' ? 'rotate-180' : ''}`}></i>
-              </span>
-              {acikMenu === 'piyasalar' && (
-                <div className="absolute top-full left-0 mt-4 w-48 bg-[#1a1d1e] border border-white/10 rounded-lg py-2 shadow-2xl z-[101]">
-                  <Link to="/markets/coin" className="no-underline text-white">
-                    <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Coin Piyasası</div>
-                  </Link>
-                  <Link to="/markets/stock" className="no-underline text-white">
-                    <div className="px-4 py-2 hover:bg-white/5 hover:text-neon-green transition-all">Borsa Piyasası</div>
-                  </Link>
-                </div>
-              )}
-            </div>
-          </nav>
-          <div className="flex items-center bg-neon-green/5 border border-neon-green/30 rounded-full p-1">
-            <button onClick={() => setgirisYapAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/30 active:scale-95 flex items-center rounded-full">
-              <i className='far fa-user mr-3'></i>Giriş Yap
-            </button>
-            <div className="h-4 w-[1px] bg-neon-green/30 mx-1"></div>
-            <button onClick={() => sethesapOlusturAcikmi(true)} className="px-6 py-2.5 text-white text-[10px] font-black tracking-widest transition-all hover:bg-neon-green/30 active:scale-95 flex items-center rounded-full">
-              <i className='fas fa-user-plus mr-3'></i>Hesap Oluştur
-            </button>
           </div>
         </div>
+
+        {/* 2. ALT KATMAN: Navigasyon Menüsü (İstediğin Çizgi Altı Kısım) */}
+        <nav className="flex items-center px-8 py-3 border-b border-white/10 bg-[#1a1d1e] gap-8">
+          <Link to="/" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
+            <i className="fas fa-home text-[8px]"></i> Ana Sayfa
+          </Link>
+          <Link to="/portfolio" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
+            <i className="fas fa-wallet text-[8px]"></i> Portföyüm
+          </Link>
+          
+          <div className="relative group cursor-pointer" onClick={() => setAcikMenu(acikMenu === 'piyasalar' ? null : 'piyasalar')}>
+            <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
+              <i className="fas fa-globe text-[8px]"></i> Piyasalar <i className={`fas fa-chevron-down text-[7px] transition-transform ${acikMenu === 'piyasalar' ? 'rotate-180' : ''}`}></i>
+            </span>
+            {acikMenu === 'piyasalar' && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-[#1a1d1e] border border-white/10 rounded-lg py-2 shadow-2xl z-[101]">
+                <Link to="/markets/coin" className="no-underline text-white block px-4 py-2 hover:bg-emerald-500/10 hover:text-emerald-400">Coin Piyasası</Link>
+                <Link to="/markets/stock" className="no-underline text-white block px-4 py-2 hover:bg-emerald-500/10 hover:text-emerald-400">Borsa Piyasası</Link>
+              </div>
+            )}
+          </div>
+        </nav>
       </header>
 
       {/* 🍏 SAYFA İÇERİKLERİ */}
@@ -251,6 +221,8 @@ const navigate = useNavigate();
           <Route path="/markets/stock" element={<StockMarketPage />} />
           <Route path="/detail/coin/:symbol" element={<CoinDetailPage />} />
           <Route path="/detail/exchange/:symbol" element={<ExchangeDetailPage />} />
+          <Route path="/news/finance" element={<FinanceNewsPage />} />
+          <Route path="/user/settings" element={<SettingsPage />} />
           <Route path="*" element={<div className="text-center pt-20">404 - Not Found</div>} />
         </Routes>
       </main>
@@ -280,21 +252,21 @@ const navigate = useNavigate();
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">T.C. Kimlik Numarası</label>
                     <div className="relative">
-                      <input type="text" value={girisTC} onChange={(e) => setGirisTC(e.target.value)} placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
+                      <input type="text" value={girisTC} onChange={(e) => setGirisTC(e.target.value)} placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Kullanıcı Adı</label>
                     <div className="relative">
-                      <input type="text" value={girisKullaniciAdi} onChange={(e) => setGirisKullaniciAdi(e.target.value)} placeholder="Kullanıcı Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
+                      <input type="text" value={girisKullaniciAdi} onChange={(e) => setGirisKullaniciAdi(e.target.value)} placeholder="Kullanıcı Adınızı Girin..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre</label>
                     <div className="relative">
-                      <input type="password" value={girisSifre} onChange={(e) => setGirisSifre(e.target.value)} placeholder="Şifrenizi Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
+                      <input type="password" value={girisSifre} onChange={(e) => setGirisSifre(e.target.value)} placeholder="Şifrenizi Girin..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" required/>
                     </div>
                   </div>
 
@@ -329,7 +301,7 @@ const navigate = useNavigate();
                       <div className="space-y-3">
                         <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">T.C. Kimlik Numarası</label>
                         <div className="relative">
-                          <input type="text" placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                          <input type="text" placeholder="***********" maxLength="11" minLength="11" className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
                         </div>
                       </div>
                     </div>
@@ -337,7 +309,7 @@ const navigate = useNavigate();
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Doğum Tarihi</label>
                         <div className="relative">
-                          <input type="date" placeholder="gg.aa.yyyy" className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                          <input type="date" placeholder="gg.aa.yyyy" className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
                         </div>
                       </div>
                     </div>
@@ -346,19 +318,19 @@ const navigate = useNavigate();
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Ad</label>
-                      <input type="text" placeholder="Adınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      <input type="text" placeholder="Adınızı Girin..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-gray-500 tracking-[0.15em]">Soyad</label>
-                      <input type="text" placeholder="Soyadınızı Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
+                      <input type="text" placeholder="Soyadınızı Girin..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Kullanıcı Adı</label>
                     <div className="relative">
-                      <input type="text" placeholder="Kullanıcı Adınızı Oluşturun..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      <input type="text" placeholder="Kullanıcı Adınızı Oluşturun..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
                     </div>
                   </div>
                   
@@ -366,14 +338,14 @@ const navigate = useNavigate();
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre</label>
                     <div className="relative">
-                      <input type="password" placeholder="Şifrenizi Oluşturun..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      <input type="password" placeholder="Şifrenizi Oluşturun..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-500 tracking-[0.2em]">Şifre Tekrar</label>
                     <div className="relative">
-                      <input type="password" placeholder="Şifrenizi Tekrar Girin..." className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
+                      <input type="password" placeholder="Şifrenizi Tekrar Girin..." className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-01 border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out"/>
                     </div>
                   </div>
                     

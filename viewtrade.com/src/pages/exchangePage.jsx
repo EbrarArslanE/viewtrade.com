@@ -157,7 +157,7 @@ function ExchangeDetailPage() {
   };
   
     return (
-    <div className="min-h-screen p-4 md:p-8 font-sans selection:bg-neon-green selection:text-black bg-cyber-black text-white">
+    <div className="min-h-screen p-4 md:p-8 font-cyber-tech selection:bg-neon-green selection:text-black bg-[#1a1d1e]/50 text-white">
       {/* Üst Bar / Navigasyon */}
 
       {/* Ana Ekran Izgarası */}
@@ -212,7 +212,7 @@ function ExchangeDetailPage() {
               <p className="font-bold text-xl tracking-tighter text-white group-hover:text-blue-400 transition-colors">-</p>
               
               <div className="flex items-center justify-center">
-                <input class="input w-[300px] bg-[#2A3335] text-[#f4f4f5] px-3 py-1 rounded-l-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" name="text" type="text" placeholder="Almak İstediğiniz Tutar" />
+                <input class="input w-[300px] bg-[#1a1d1e] text-[#f4f4f5] px-3 py-1 rounded-l-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 focus:ring-offset-[#09090b] transition-all duration-150 ease-in-out" name="text" type="text" placeholder="Almak İstediğiniz Tutar" />
                 <div class="text-[#f4f4f5] px-3 py-1 rounded-r-lg border-y border-r border-r-white/10 border-y-white/10 transition-all duration-150 easy-in-out" >
                   <i className='fas fa-dollar'></i>
                 </div>

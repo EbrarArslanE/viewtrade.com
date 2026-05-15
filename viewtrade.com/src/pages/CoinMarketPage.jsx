@@ -49,7 +49,7 @@ const CoinMarketPage = () => {
 	const azalisOrani = sortedByLoss[0]?.priceChangePercent || '0';
 
   return (
-    <div className="w-full min-h-screen bg-[#2A3335] text-white pb-10 px-8">
+    <div className="w-full min-h-screen bg-[#1a1d1e] text-white pb-10 px-8">
       <div className="mx-auto mb-5">
         <div className="grid grid-cols-12 gap-6 mt-8">
           {/* Öne Çıkan İstatistik Kutuları */}
@@ -68,7 +68,7 @@ const CoinMarketPage = () => {
         </div>
       </div>
 
-			<div className="col-span-12 md:col-span-4 bg-[#2A3335]/80 backdrop-blur-xl border border-white/5 p-8 mb-5 rounded-[12px] shadow-2xl">
+			<div className="col-span-12 md:col-span-4 bg-[#1a1d1e]/80 backdrop-blur-xl border border-white/5 p-8 mb-5 rounded-[12px] shadow-2xl">
 				<div className="flex flex-row flex-wrap gap-6">
 					{/* 1. Fiyat Aralığı */}
 					<div className="flex flex-col gap-2 w-[220px]">

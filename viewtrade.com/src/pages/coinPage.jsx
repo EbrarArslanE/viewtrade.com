@@ -78,11 +78,11 @@ function CoinDetailPage() {
   }, [symbol]); // Symbol değiştiğinde (yeni arama) tekrar çalışır
 
   if (loading || !seciliCoin) {
-    return <div className="min-h-screen bg-cyber-black flex items-center justify-center text-neon-green font-mono">VERİLER YÜKLENİYOR...</div>;
+    return <div className="min-h-screen bg-[#1a1d1e]/50 flex items-center justify-center text-neon-green font-mono">VERİLER YÜKLENİYOR...</div>;
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 font-sans selection:bg-neon-green selection:text-black bg-cyber-black text-white">
+    <div className="min-h-screen p-4 md:p-8 font-cyber-tech selection:bg-neon-green selection:text-black bg-[#1a1d1e]/50 text-white">
       <div className="grid grid-cols-12 gap-6">
         
         {/* Grafik Alanı */}
@@ -131,11 +131,11 @@ function CoinDetailPage() {
               </div>
 
               <div className="flex items-center">
-                <div className="text-[#f4f4f5] px-4 py-3 bg-[#2A3335] rounded-l-lg border-y border-r border-white/10">
+                <div className="text-[#f4f4f5] px-4 py-3 bg-[#1a1d1e] rounded-l-lg border-y border-r border-white/10">
                   {seciliCoin.symbol}
                 </div>
-                <input className="input w-full bg-[#2A3335] text-[#f4f4f5] px-3 py-3 border border-white/10 focus:outline-none focus:ring-1 focus:ring-neon-green transition-all" placeholder="Almak İstediğiniz Tutar" />
-                <div className="text-[#f4f4f5] px-4 py-3 bg-[#2A3335] rounded-r-lg border-y border-r border-white/10">
+                <input className="input w-full bg-[#1a1d1e] text-[#f4f4f5] px-3 py-3 border border-white/10 focus:outline-none focus:ring-1 focus:ring-neon-green transition-all" placeholder="Almak İstediğiniz Tutar" />
+                <div className="text-[#f4f4f5] px-4 py-3 bg-[#1a1d1e] rounded-r-lg border-y border-r border-white/10">
                   <i className='fas fa-dollar-sign'></i>
                 </div>
               </div>

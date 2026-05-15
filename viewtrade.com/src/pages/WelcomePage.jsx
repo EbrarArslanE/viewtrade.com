@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// import { fetchMassiveData } from '../services/newsService'; // Kendi servisine göre açarsın
+import { fetchMassiveData } from '../services/newsService'; // Kendi servisine göre açarsın
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 // 🍏 Kompakt ve Resmi Trend Satırı (Mini Tablo Formatı)
 const GainerRow = ({ name, price, change, isUp }) => (
@@ -22,26 +23,82 @@ const WelcomePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simüle edilmiş veri çekimi (Sen kendi servisini bağlarsın)
     const getMassiveContent = async () => {
-      // const result = await fetchMassiveData();
-      // setMassiveItems(result.items.slice(0, 5)); 
-      
-      // Test verisi (Silersin burayı)
-      setMassiveItems([
-        { id: 1, ticker: "METCI", cash_amount: "2.50", currency: "USD", ex_dividend_date: "2026-05-10", dividend_type: "CD" },
-        { id: 2, ticker: "AAPL", cash_amount: "0.24", currency: "USD", ex_dividend_date: "2026-05-12", dividend_type: "CD" },
-        { id: 3, ticker: "MSFT", cash_amount: "1.10", currency: "USD", ex_dividend_date: "2026-05-15", dividend_type: "SD" },
-      ]);
+      const result = await fetchMassiveData();
+      setMassiveItems(result.items.slice(0, 5)); 
       setLoading(false);
     };
     getMassiveContent();
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-[#2A3335] text-white pt-10 pb-20 px-8">
-    {/* <div className="w-full min-h-screen bg-[#09090b] text-white pt-10 pb-20 px-8"> */}
-      <div className="grid grid-cols-12 gap-6 max-w-[1600px] mx-auto">
+    
+    <div className="w-full min-h-screen gap-6 flex flex-col bg-[#1a1d1e] text-white pt-10 pb-20 px-8">
+    
+      <div className="relative w-full min-h-screen flex flex-col gap-16 bg-gradient-to-br from-[#1a1d1e] via-[#0B1120] to-[#071E3D] text-slate-100 pt-16 pb-20 px-10 selection:bg-cyan-500/30 overflow-x-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] pointer-events-none animate-pulse" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-blue-600/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col items-start gap-4">
+          <div className="flex items-center gap-3 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] font-mono tracking-widest uppercase text-emerald-400">Live Market Feed Active</span>
+          </div>
+
+          <h1 className="group text-7xl md:text-9xl font-black tracking-tighter cursor-pointer transition-all duration-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-[length:200%_auto] hover:animate-gradient-x transition-all">
+              viewtrade
+            </span>
+            <span className="relative inline-block text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:text-emerald-400">
+              .com
+              <span className="absolute bottom-2 left-0 w-0 h-1 bg-emerald-400 transition-all duration-500 group-hover:w-full shadow-[0_0_15px_rgba(52,211,153,0.8)]" />
+            </span>
+          </h1>
+          
+          <p className="max-w-2xl text-slate-400 font-light text-xl leading-relaxed">
+            Gerçek zamanlı verilerle borsa deneyimini <span className="text-white font-medium italic">risksiz</span> keşfet. 
+            Stratejini geliştir, piyasayı domine et.
+          </p>
+
+          {/* CTA Butonları */}
+          <div className="flex gap-4 mt-4">
+            <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-[#020617] font-bold rounded-xl transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] active:scale-95">
+              Simülasyona Başla
+            </button>
+            <button className="px-8 py-4 border border-slate-700 hover:border-slate-500 bg-white/5 backdrop-blur-sm rounded-xl transition-all hover:bg-white/10 active:scale-95">
+              Nasıl Çalışır?
+            </button>
+          </div>
+        </div>
+
+        {/* 2. STATS GRID: Canlı Veri Görünümü (Scrollable Başlangıcı) */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
+          {[
+            { label: 'Aktif Kullanıcı', val: '12.4k+', color: 'from-emerald-500/20' },
+            { label: 'Simüle Edilen Hacim', val: '$1.2B', color: 'from-blue-500/20' },
+            { label: 'Bağlı API', val: 'Binance & BIST', color: 'from-cyan-500/20' }
+          ].map((stat, i) => (
+            <div key={i} className={`p-6 rounded-2xl border border-white/5 bg-gradient-to-br ${stat.color} to-transparent backdrop-blur-md hover:border-white/20 transition-all cursor-crosshair group`}>
+              <p className="text-slate-500 text-xs font-mono uppercase tracking-widest mb-2">{stat.label}</p>
+              <h3 className="text-3xl font-bold group-hover:text-white transition-colors">{stat.val}</h3>
+            </div>
+          ))}
+        </div>
+
+        {/* 3. SCROLL INDICATOR */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+          <span className="text-[10px] font-mono tracking-widest uppercase">Scroll to Explore</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-emerald-500 to-transparent animate-bounce" />
+        </div>
+
+      </div>
+      
+      <hr />
+
+      <div className="grid grid-cols-12 gap-6 w-full mx-auto">
         
         {/* 🍏 Üstteki Fütüristik ve Resmi Banner */}
         <div className="col-span-12 lg:col-span-8 bg-[#111315] border border-[#2A3335] rounded-[32px] p-10 min-h-[380px] flex flex-col justify-between relative overflow-hidden group">
@@ -83,10 +140,13 @@ const WelcomePage = () => {
         </div>
 
         {/* 🍏 ALT KISIM - HABERLER YERİNE RESMİ SİNYAL TABLOSU */}
-        <div className="col-span-12 lg:col-span-9 bg-[#111315] border border-[#2A3335] rounded-[32px] p-8 overflow-hidden">
+        <div className="col-span-12 lg:col-span-12 bg-[#111315] border border-[#2A3335] rounded-[32px] p-8 overflow-hidden">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-[11px] font-bold text-gray-400 tracking-widest">GÜNCEL FİNANSAL BİLDİRİMLER</h2>
-            <button className="text-[10px] text-[#73b2c0] hover:text-white transition-colors">Tümünü Gör</button>
+                <Link to="/news/finance" className="no-underline text-white block px-4 py-2 hover:bg-emerald-500/10 hover:text-emerald-400">
+                  {/* <i className="fas fa-cog text-[8px] mr-2"></i> Ayarlar */}
+                  <button className="text-[10px] text-[#73b2c0] hover:text-white transition-colors">Tümünü Gör</button>
+                </Link>
           </div>
           
           {loading ? (
@@ -130,19 +190,6 @@ const WelcomePage = () => {
             </div>
           )}
         </div>
-
-        {/* 🍏 Resmi Sistem Bülten Kutusu */}
-        <div className="col-span-12 lg:col-span-3 bg-[#73b2c0]/10 border border-[#73b2c0]/30 rounded-[32px] p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-[#73b2c0]/20 rounded-full flex items-center justify-center mb-4 text-[#73b2c0]">
-            <i className="fas fa-shield-alt text-lg"></i>
-          </div>
-          <h3 className="font-bold text-[13px] text-white mb-2">Güvenli Veri Akışı</h3>
-          <p className="text-[11px] text-gray-400 mb-6">Piyasa uyarılarını doğrudan sisteminize entegre edin.</p>
-          <button className="w-full py-3 bg-[#73b2c0] text-[#09090b] text-[11px] font-black rounded-xl hover:bg-white transition-colors">
-            Bağlantı Kur
-          </button>
-        </div>
-
       </div>
     </div>
   );
