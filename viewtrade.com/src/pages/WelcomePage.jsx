@@ -35,7 +35,7 @@ const WelcomePage = () => {
     
     <div className="w-full min-h-screen gap-6 flex flex-col bg-[#1a1d1e] text-white pt-10 pb-20 px-8">
     
-      <div className="relative w-full min-h-screen flex flex-col gap-16 bg-gradient-to-br from-[#1a1d1e] via-[#0B1120] to-[#071E3D] text-slate-100 pt-16 pb-20 px-10 selection:bg-cyan-500/30 overflow-x-hidden">
+      <div className="relative w-full min-h-screen flex flex-col gap-16 bg-gradient-to-br from-[#020617] via-[#0B1120] to-[#071E3D] text-slate-100 pt-16 pb-20 px-10 selection:bg-cyan-500/30 overflow-x-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] pointer-events-none animate-pulse" />
         <div className="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-blue-600/10 blur-[100px] pointer-events-none" />
 
@@ -96,7 +96,7 @@ const WelcomePage = () => {
 
       </div>
       
-      <hr />
+      <hr class="border-none h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent shadow-[0_0_8px_rgba(52,211,153,0.2)] my-8" />
 
       <div className="grid grid-cols-12 gap-6 w-full mx-auto">
         

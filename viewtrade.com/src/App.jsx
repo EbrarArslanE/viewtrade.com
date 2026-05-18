@@ -8,6 +8,7 @@ import PortfolioPage from "./pages/PortfolioPage.jsx";
 
 import FinanceNewsPage from "./pages/FinanceNewsPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
+import LiveMarketTerminal from "./pages/LiveMarketTerminal.jsx";
 
 import CoinMarketPage from "./pages/CoinMarketPage.jsx";
 import StockMarketPage from "./pages/StockMarketPage.jsx";
@@ -191,11 +192,20 @@ const navigate = useNavigate();
 
         {/* 2. ALT KATMAN: Navigasyon Menüsü (İstediğin Çizgi Altı Kısım) */}
         <nav className="flex items-center px-8 py-3 border-b border-white/10 bg-[#1a1d1e] gap-8">
+          <Link to="/LiveMarketTerminal" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
+            <div className="flex items-center gap-3 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-md cursor-pointer">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-mono tracking-widest text-emerald-400">Canlı market akış terminali</span>
+            </div>
+          </Link>
           <Link to="/" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
             <i className="fas fa-home text-[8px]"></i> Ana Sayfa
           </Link>
-          <Link to="/portfolio" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
-            <i className="fas fa-wallet text-[8px]"></i> Portföyüm
+          <Link to="/news/finance" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
+            <i className="fas fa-newspaper text-[8px]"></i> Piyasadan Haberler
           </Link>
           
           <div className="relative group cursor-pointer" onClick={() => setAcikMenu(acikMenu === 'piyasalar' ? null : 'piyasalar')}>
@@ -223,12 +233,13 @@ const navigate = useNavigate();
           <Route path="/detail/exchange/:symbol" element={<ExchangeDetailPage />} />
           <Route path="/news/finance" element={<FinanceNewsPage />} />
           <Route path="/user/settings" element={<SettingsPage />} />
+          <Route path="/LiveMarketTerminal" element={<LiveMarketTerminal />} />
           <Route path="*" element={<div className="text-center pt-20">404 - Not Found</div>} />
         </Routes>
       </main>
 
       {/* MODALLAR (Giriş / Kayıt) */}
-      <div className="flex items-center bg-neon-green/5 border border-neon-green/30 rounded-01 p-0.5 overflow-hidden">
+      <div className="flex items-center rounded-01 p-0.5 overflow-hidden">
           {girisYapAcikmi && (
             <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
               {/* Backdrop (Karartma ve Tıklayınca Kapatma) */}

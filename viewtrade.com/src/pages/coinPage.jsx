@@ -78,11 +78,11 @@ function CoinDetailPage() {
   }, [symbol]); // Symbol değiştiğinde (yeni arama) tekrar çalışır
 
   if (loading || !seciliCoin) {
-    return <div className="min-h-screen bg-[#1a1d1e]/50 flex items-center justify-center text-neon-green font-mono">VERİLER YÜKLENİYOR...</div>;
+    return <div className="min-h-screen bg-[#020617]/50 flex items-center justify-center text-neon-green font-mono">VERİLER YÜKLENİYOR...</div>;
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 font-cyber-tech selection:bg-neon-green selection:text-black bg-[#1a1d1e]/50 text-white">
+    <div className="min-h-screen p-4 md:p-8 font-cyber-tech selection:bg-neon-green selection:text-black bg-[#020617]/50 text-white">
       <div className="grid grid-cols-12 gap-6">
         
         {/* Grafik Alanı */}

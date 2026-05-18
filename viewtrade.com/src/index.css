@@ -159,3 +159,12 @@
   text-transform: uppercase;
   letter-spacing: 0.4em; /* Geniş boşluk lüks hissettirir */
 }
+
+/* Standart CSS */
+hr.neon-fade {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 200, 0.4), transparent);
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.2);
+  margin: 2rem 0;
+}
