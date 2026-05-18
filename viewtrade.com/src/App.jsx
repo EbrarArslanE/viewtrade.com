@@ -137,15 +137,21 @@ const navigate = useNavigate();
       <header className="sticky top-0 z-[100] backdrop-blur-md">
         {/* 1. ÜST KATMAN: Logo ve Arama Motoru */}
         <div className="flex justify-between items-center px-8 py-4 border-b border-white/5 bg-[#020617]/80">
-          <div>
-            <Link to="/" className="no-underline">
+          <div className='flex flex-row items-center justify-center gap-3 '>
+            <Link to="/" className="no-underline ">
               <h1 className="text-4xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 cursor-pointer hover:opacity-80 transition-all active:scale-95">
                 viewtrade<span className="text-white">.com</span>
               </h1>
             </Link>
-            <p className="text-[9px] font-mono text-gray-500 tracking-[0.2em] mt-1">
-              Kuantum İşlem Terminali // v1.1.1-beta
-            </p>
+            <Link to="/LiveMarketTerminal" className=" text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
+              <div className="flex items-center gap-3 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-md cursor-pointer">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-[10px] font-mono tracking-widest text-emerald-400">Canlı market akış terminali</span>
+              </div>
+            </Link>    
           </div>
 
           {/* GELİŞMİŞ ARAMA MOTORU (Aynı kalıyor) */}
@@ -192,15 +198,6 @@ const navigate = useNavigate();
 
         {/* 2. ALT KATMAN: Navigasyon Menüsü (İstediğin Çizgi Altı Kısım) */}
         <nav className="flex items-center px-8 py-3 border-b border-white/10 bg-[#1a1d1e] gap-8">
-          <Link to="/LiveMarketTerminal" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
-            <div className="flex items-center gap-3 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-md cursor-pointer">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-[10px] font-mono tracking-widest text-emerald-400">Canlı market akış terminali</span>
-            </div>
-          </Link>
           <Link to="/" className="text-[10px] font-black tracking-[0.2em] text-gray-400 hover:text-emerald-400 transition-colors no-underline flex items-center gap-2">
             <i className="fas fa-home text-[8px]"></i> Ana Sayfa
           </Link>
