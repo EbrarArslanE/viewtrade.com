@@ -867,6 +867,10 @@
   border: 1px solid rgba(148, 163, 184, 0.14);
 }
 
+.profile-meta-full {
+  grid-column: 1 / -1;
+}
+
 .profile-meta-grid dt {
   color: var(--muted);
   font-size: 0.74rem;

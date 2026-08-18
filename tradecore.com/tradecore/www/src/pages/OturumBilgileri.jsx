@@ -62,6 +62,10 @@ export default function OturumBilgileri({ aktifKullanici, onGirisAc, onCikisYap,
 							<dt>Rol</dt>
 							<dd>{aktifKullanici?.e_rol || '-'}</dd>
 						</div>
+						<div className="profile-meta-full">
+							<dt>Bakiye</dt>
+							<dd>{aktifKullanici?.e_bakiye || '-'}</dd>
+						</div>
 					</dl>
 				</article>
 			</div>

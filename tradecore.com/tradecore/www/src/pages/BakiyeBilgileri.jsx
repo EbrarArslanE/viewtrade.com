@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, Clock3, RefreshCw, ShieldCheck, UserRound, Wallet } from 'lucide-react'
+import { ArrowLeft, Clock3, PlusCircle, RefreshCw, ShieldCheck, UserRound, Wallet, X, Coins } from 'lucide-react'
+import { supabase } from '../lib/supabase'
+import { toast } from 'react-toastify'
 
 function formatMoney(value) {
 	const sayi = Number(value || 0)
@@ -15,22 +17,92 @@ function formatMoney(value) {
 	}).format(sayi)
 }
 
-export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) {
+export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome, toastOptions }) {
 	const [bakiyeListesi, setBakiyeListesi] = useState([])
 	const [yukleniyor, setYukleniyor] = useState(false)
 	const [hata, setHata] = useState('')
+	const [modalAcikMi, setModalAcikMi] = useState(false)
 
 	const kullaniciId = aktifKullanici?.e_kullanici_id || aktifKullanici?.e_id || aktifKullanici?.id || ''
 
-	async function bakiyeBilgisiGetir() {
+
+	const [bakiyeBilgisi, setBakiyeBilgisi] = useState(aktifKullanici?.e_bakiye || 0)
+  const [bakiyeBilgisiGuncel, setBakiyeBilgisiGuncel] = useState('')
+
+	useEffect(() =>{
+		if(aktifKullanici){
+			setBakiyeBilgisi(aktifKullanici?.e_bakiye ?? aktifKullanici?.bakiye ?? 0)
+		}
+	}, [aktifKullanici])
+
+	async function handleBakiyeYukleme(e) {
+    e.preventDefault()
+
+		const eklenecekTutar = Number(bakiyeBilgisiGuncel)
+		if (isNaN(eklenecekTutar) || eklenecekTutar <= 0) {
+			toast.error('Lütfen Geçerli bir tutar girin.', toastOptions)
+			return
+		}
+
+		const loadingToastId = toast.loading('Bakiye güncelleniyor...', {
+			...toastOptions,
+			autoClose: false,
+			closeButton: false,
+		})
+
+		try {
+			if (!['Yönetici', 'Muhasebeci'].includes(aktifKullanici?.e_rol)){
+				toast.update(loadingToastId,{
+					render:'Yetkiniz bu işlemi yapmak için yeterli değil, lütfen yetkiliye başvurun.',
+					type: 'error',
+					isLoading: false,
+					autoClose: 3000,
+					closeButton: false,
+				})
+				return
+			}
+
+			const yeniBakiye = Number(bakiyeBilgisi) + eklenecekTutar
+
+			const { data, error } = await supabase
+
+			.from('KULLANICILAR')
+			.update({e_bakiye : yeniBakiye})
+			.eq('e_id', kullaniciId)
+			.select()
+			if (error) throw error
+
+			setBakiyeBilgisi(yeniBakiye)
+			setBakiyeBilgisiGuncel('')
+
+			toast.update(loadingToastId, {
+				render: `Bakiye Başarıyla eklendi! Yeni bakiye: ${formatMoney(yeniBakiye)}`,
+				type: 'success',
+				isLoading: false,
+				autoClose: 1800,
+				closeButton: false,
+			})
+		} catch (error) {
+			console.error('Supabase Hatası:', error)
+			toast.update(loadingToastId,{
+				render:'Sorgulanırken bir hata oluştu.' + error.message,
+				type: 'error',
+				isLoading: false,
+				autoClose: 3500,
+				closeButton: false,
+			})
+
+		}
+
+  }
+
+	async function coinBakiyeBilgisiGetir() {
 		if (!kullaniciId) {
 			setHata('Bakiye bilgisi için kullanıcı kimliği bulunamadı')
 			return
 		}
-
 		setYukleniyor(true)
 		setHata('')
-
 		try {
 			const response = await fetch(`${apiBaseUrl}/BakiyeBilgileri/Listele/${kullaniciId}`)
 			const payload = await response.json()
@@ -49,7 +121,7 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 	}
 
 	useEffect(() => {
-		bakiyeBilgisiGetir()
+		coinBakiyeBilgisiGetir()
 	}, [apiBaseUrl, kullaniciId])
 
 	const coinListesi = bakiyeListesi.map((item) => {
@@ -57,10 +129,11 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 
 		return {
 			id: item.e_id || `${item.e_kullanici_id || kullaniciId}-${coin.e_coin_kodu || coin.e_coin_ad || 'coin'}`,
-			coinAdi: coin.e_coin_ad || 'İsimsiz Coin',
+			coinAdi: item.e_coin_ad || 'İsimsiz Coin',
 			coinKodu: coin.e_coin_kodu || '-',
 			adet: item.e_adet ?? 0,
 			kullaniciId: item.e_kullanici_id || kullaniciId,
+			bakiyeBilgisi: item.e_bakiye
 		}
 	})
 
@@ -68,6 +141,7 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 	const toplamCoinCinsi = coinListesi.length
 	const toplamAdet = coinListesi.reduce((toplam, item) => toplam + Number(item.adet || 0), 0)
 	const sonGuncelleme = bakiyeListesi[0]?.updated_at || bakiyeListesi[0]?.created_at || aktifKullanici?.updated_at || aktifKullanici?.created_at
+	const bakiye = bakiyeListesi[0]?.e_bakiye
 
 	return (
 		<section className="profile-panel balance-panel">
@@ -78,14 +152,47 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 					<p>Aktif kullanıcının bakiyesi, <strong>e_kullanici_id</strong> üzerinden servisden çekilir ve kart görünümünde gösterilir.</p>
 
 					<div className="balance-hero-actions">
-						<button type="button" className="secondary-button" onClick={bakiyeBilgisiGetir}>
-							<RefreshCw size={16} />
-							Yenile
+						<button type="button" className="primary-button" onClick={() => setModalAcikMi(true)}>
+							<PlusCircle size={16} />
+							Yeni Bakiye Ekle
 						</button>
-						<button type="button" className="primary-button" onClick={onHome}>
-							<ArrowLeft size={16} />
-							Ana Sayfa
-						</button>
+							{modalAcikMi && (
+								<div className="modal-backdrop">
+									<div className="modal-card">
+										<div className="modal-head">
+											<div>
+												<span className="eyebrow">Yetkili erişim</span>
+												<h3>Bakiye Ekle</h3>
+											</div>
+											<button onClick={() => setModalAcikMi(false)} className="icon-button" type="button">
+												<X size={18} />
+											</button>
+										</div>
+
+										<form onSubmit={handleBakiyeYukleme} className="login-form">
+											<div className="field-block">
+												<label>Mevcut Bakiyeniz</label>
+												<input type="text" value={formatMoney(bakiyeBilgisi)} readOnly disabled/>
+											</div>
+
+											<div className="field-block">
+												<label>Eklemek İstediğiniz Tutar</label>
+												<input type="text" placeholder="Eklemek istediğiniz tutarı girin" value={bakiyeBilgisiGuncel} onChange={(e) => setBakiyeBilgisiGuncel(e.target.value)} required />
+											</div>
+
+											<div className="form-actions">
+												<button type="button" onClick={() => setModalAcikMi(false)} className="secondary-button" >
+													İptal
+												</button>
+												<button type="submit" className="primary-button" >
+													Bakiye Ekle
+												</button>
+											</div>
+										</form>
+
+									</div>
+								</div>
+							)}
 					</div>
 				</div>
 
@@ -124,11 +231,11 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 
 					<article className="balance-card accent-amber">
 						<div className="balance-card-head">
-							<Clock3 size={16} />
-							<span>Son güncelleme</span>
+							<Wallet size={16} />
+							<span>Bakiyeniz</span>
 						</div>
-						<strong>{sonGuncelleme || '-'}</strong>
-						<p>Veri zaman damgası mevcutsa burada gösterilir.</p>
+						<strong>{bakiye || '-'}</strong>
+						<p>Mevcut nakit bakiyeniz burada gösterilir.</p>
 					</article>
 
 					<article className="balance-card balance-wide">
@@ -152,10 +259,23 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
 
 			{!yukleniyor && !hata && (
 				<section className="balance-portfolio-section">
-					<div className="section-head balance-section-head">
-						<h3>Coin Portföyü</h3>
-						<p>Kullanıcının tüm coinleri kart ve tablo hissini birlikte veren listede gösterilir.</p>
-					</div>
+						<div className="w-full display flex-col items-center justify-between gap-5">
+
+							<div className="w-full display flex items-center justify-center pb-5">
+								<div className="section-head balance-section-head">
+									<h3>Coin Portföyü</h3>
+								</div>
+							</div>
+
+							<div className="w-full pb-5">
+								<button type="button" className="primary-button w-full" onClick={() => setModalAcikMi(true)}>
+									<Coins size={16}/>
+									Yeni Coin Siparişi Oluştur
+								</button>
+							</div>
+						</div>
+
+
 
 					{coinListesi.length === 0 ? (
 						<div className="profile-empty">

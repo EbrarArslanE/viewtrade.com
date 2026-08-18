@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, BarChart3, Bell, ChevronDown, Database, LineChart, LogOut, Sparkles, X } from 'lucide-react'
+import { ArrowRight, BarChart3, Bell, ChevronDown, Database, LineChart, LogOut, Sparkles, X, ReceiptText } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { supabase } from './lib/supabase'
@@ -8,6 +8,7 @@ import BakiyeBilgileri from './pages/BakiyeBilgileri.jsx'
 import OturumBilgileri from './pages/OturumBilgileri.jsx'
 import ProfilBilgileri from './pages/ProfilBilgileri.jsx'
 import KullaniciListesi from './pages/KullaniciListesi.jsx'
+import KullaniciVarliklari from './pages/kullaniciVarliklari.jsx'
 import './App.css'
 
 const toastOptions = {
@@ -30,22 +31,19 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
     home: '/home',
     profil: '/profil',
     kullanici: '/kullanici',
+    KullaniciVarliklari: '/KullaniciVarliklari',
     oturum: '/oturum',
     bakiye: '/bakiye',
   }
 
-  function getRouteFromHash(hash) {
-    const temizHash = hash.replace(/^#\/?/, '')
+  function getRouteFromPath(path) {
+    // Baştaki ve sondaki slash'leri temizler (örn: "/kullanici/" -> "kullanici")
+    const temizPath = path.replace(/^\/+|\/+$/g, '')
 
-    if (temizHash === '' || temizHash === 'home') return 'home'
-    if (temizHash === 'profil') return 'profil'
-    if (temizHash === 'kullanici') return 'kullanici'
-    if (temizHash === 'oturum') return 'oturum'
-    if (temizHash === 'bakiye') return 'bakiye'
+    const gecerliRotalar = ['home', 'profil', 'kullanici', 'oturum', 'bakiye', 'KullaniciVarliklari']
 
-    return 'home'
+    return gecerliRotalar.includes(temizPath) ? temizPath : 'home'
   }
-
   const headerMenus = [
     {
       id: 'piyasa',
@@ -63,17 +61,18 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
       items: [
         { title: 'Sipariş Takibi', desc: 'Aktif iş ve teslimat akışları', path: 'bakiye' },
         { title: 'Kullanıcı Takibi', desc: 'Sistem Kullanıcılarının Listesi', path: 'kullanici' }, // -> doğrudan 'kullanici' rotasına gider!
-        { title: 'PDF Modülleri', desc: 'Fatura ve teklif şablonları', path: 'home' },
+        { title: 'Varlık Takibi', desc: 'Varlık Listeniz ve detayları.', path: 'KullaniciVarliklari' },
       ],
     },
     {
-      id: 'raporlar',
-      label: 'Raporlar',
-      icon: LineChart,
+      id: 'muhasebe',
+      label: 'Muhasebe',
+      icon: ReceiptText,
       items: [
-        { title: 'Günlük Özet', desc: 'Kapanış raporu ve değişim özeti', path: 'oturum' },
-        { title: 'Risk Analizi', desc: 'Alarm ve eşik kontrolleri', path: 'profil' },
-        { title: 'Çıktı Merkezi', desc: 'Dışa aktarma ve paylaşım alanı', path: 'home' },
+        { title: 'Faturalar', desc: 'Firmanıza Kesilen Faturalar', path: 'faturalar' },
+        { title: 'Fatura Girişi', desc: 'Firmanızın Kestiği Faturalar', path: 'faturaGirisleri' }
+        // { title: 'Risk Analizi', desc: 'Alarm ve eşik kontrolleri', path: 'profil' },
+        // { title: 'Çıktı Merkezi', desc: 'Dışa aktarma ve paylaşım alanı', path: 'home' },
       ],
     },
   ]
@@ -81,9 +80,10 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 export default function App() {
   const headerRef = useRef(null)
   const [acikMenu, setAcikMenu] = useState(null)
-  const [aktifSayfa, setAktifSayfa] = useState(() => getRouteFromHash(window.location.hash))
+  const [aktifSayfa, setAktifSayfa] = useState(() => getRouteFromPath(window.location.pathname))
   const [modalAcikMi, setModalAcikMi] = useState(false)
   const [eposta, setEposta] = useState('')
+  const [sifre, setSifre] = useState('')
 
   // Başlangıçta localStorage'a bakıyoruz, varsa kullanıcı oturumu otomatik açık geliyor
   const [aktifKullanici, setAktifKullanici] = useState(() => {
@@ -93,19 +93,19 @@ export default function App() {
 
   useEffect(() => {
     function handleHashChange() {
-      setAktifSayfa(getRouteFromHash(window.location.hash))
+      setAktifSayfa(getRouteFromPath(window.location.pathname))
     }
 
     handleHashChange()
 
-    if (!window.location.hash) {
-      window.location.hash = routeMap.home
+    if (!window.location.pathname || window.location.pathname === '/') {
+      window.location.pathname = routeMap.home
     }
 
-    window.addEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handleHashChange)
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener('popstate', handleHashChange)
     }
   }, [])
 
@@ -136,20 +136,20 @@ export default function App() {
   // Giriş yapma fonksiyonu
   async function handleGirisYap(e) {
     e.preventDefault()
-    const loadingToastId = toast.loading('Mermiler yükleniyor, doğrulanıyor...', {
+    const loadingToastId = toast.loading('Giriş verileri yükleniyor, doğrulanıyor...', {
       ...toastOptions,
       autoClose: false,
       closeButton: false,
     })
 
     try {
-      const { data, error } = await supabase.from('KULLANICILAR').select('*').eq('e_eposta', eposta).limit(1)
+      const { data, error } = await supabase.from('KULLANICILAR').select('*').eq('e_eposta', eposta).eq('e_sifre', sifre).limit(1)
 
       if (error) throw error
 
       if (!data || data.length === 0) {
         toast.update(loadingToastId, {
-          render: 'Bu e-posta ile kayıtlı yetkili bulunamadı.',
+          render: 'E-posta veya Şifre hatalı. Lütfen kontrol ediniz.',
           type: 'error',
           isLoading: false,
           autoClose: 3000,
@@ -193,7 +193,7 @@ export default function App() {
     setAktifKullanici(null)
     localStorage.removeItem('tradecore_kullanici')
     setAcikMenu(null)
-    window.location.hash = routeMap.home
+    window.location.pathname = routeMap.home
     toast.info('Oturum kapatıldı.', toastOptions)
   }
 
@@ -203,7 +203,7 @@ export default function App() {
       toast.warn('Lütfen önce Bayi Girişi yapınız!', toastOptions)
       return
     }
-    window.location.hash = routeMap[route] || routeMap.home
+    window.location.pathname = routeMap[route] || routeMap.home
   }
 
   function toggleMenu(menuId) {
@@ -232,6 +232,10 @@ export default function App() {
 
   function handleKullaniciListesiAc() {
     navigateTo('kullanici')
+  }
+
+  function handleKullaniciVarliklariAc() {
+    navigateTo('KullaniciVarliklari')
   }
 
   function handleMenuSelect(hedefModul) {
@@ -346,6 +350,9 @@ export default function App() {
         {aktifSayfa === 'oturum' && (
           <OturumBilgileri aktifKullanici={aktifKullanici} onGirisAc={() => setModalAcikMi(true)} onCikisYap={handleCikisYap} onHome={handleAnaSayfaAc} />
         )}
+        {aktifSayfa === 'KullaniciVarliklari' && (
+          <KullaniciVarliklari apiBaseUrl={apiBaseUrl} aktifKullanici={aktifKullanici} onHome={handleAnaSayfaAc} />
+        )}
       </main>
       <ToastContainer />
       {modalAcikMi && (
@@ -364,27 +371,19 @@ export default function App() {
             <form onSubmit={handleGirisYap} className="login-form">
               <div className="field-block">
                 <label>E-posta Adresi</label>
-                <input
-                  type="email"
-                  placeholder="ebrar.arslan@eronyazilim.com"
-                  value={eposta}
-                  onChange={(e) => setEposta(e.target.value)}
-                  required
-                />
+                <input type="email" placeholder="example@tradecore.com" value={eposta} onChange={(e) => setEposta(e.target.value)} required />
+              </div>
+
+              <div className="field-block">
+                <label>Şifre</label>
+                <input type="password" placeholder="Şifrenizi girin" value={sifre} onChange={(e) => setSifre(e.target.value)} required />
               </div>
 
               <div className="form-actions">
-                <button
-                  type="button"
-                  onClick={() => setModalAcikMi(false)}
-                  className="secondary-button"
-                >
+                <button type="button" onClick={() => setModalAcikMi(false)} className="secondary-button" >
                   İptal
                 </button>
-                <button
-                  type="submit"
-                  className="primary-button"
-                >
+                <button type="submit" className="primary-button" >
                   Doğrula & Gir
                 </button>
               </div>

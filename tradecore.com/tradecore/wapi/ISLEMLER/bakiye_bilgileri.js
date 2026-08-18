@@ -78,22 +78,33 @@ function bakiyeBilgileri(supabase) {
           ...item,
           COIN_LISTESI: {
             e_coin_kodu: coinDetay.e_coin_kodu,
-            e_coin_adi: coinDetay.e_coin_adi
+            e_coin_adi: coinDetay.e_coin_adi,
           }
         };
       });
 
       // 5. Toplam portföy değerini KULLANICILAR tablosuna yazalım
+      const { data: kullaniciData, error: kullaniciError } = await supabase
+        .from('KULLANICILAR')
+        .select('e_bakiye')
+        .eq('e_id', e_kullanici_id)
+        .single();
+
+      if (kullaniciError) throw kullaniciError;
+
+      const mevcutBakiye = Number(kullaniciData?.e_bakiye) || 0;
+      const yeniBakiye = mevcutBakiye + toplamPortfoyDegeri;
+
       await supabase
         .from('KULLANICILAR')
-        .update({ e_bakiye: toplamPortfoyDegeri })
+        .update({ e_bakiye: yeniBakiye })
         .eq('e_id', e_kullanici_id);
 
       // 6. Sonucu frontend'e fırlat
       res.json({
         islemTag: 'B',
         success: true,
-        toplamBakiye: toplamPortfoyDegeri,
+        toplamBakiye: yeniBakiye,
         data: birlesmisVeri,
       });
 
