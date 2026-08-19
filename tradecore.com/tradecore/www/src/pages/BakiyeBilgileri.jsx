@@ -25,7 +25,6 @@ export default function BakiyeBilgileri({ apiBaseUrl, aktifKullanici, onHome, to
 
 	const kullaniciId = aktifKullanici?.e_kullanici_id || aktifKullanici?.e_id || aktifKullanici?.id || ''
 
-
 	const [bakiyeBilgisi, setBakiyeBilgisi] = useState(aktifKullanici?.e_bakiye || 0)
   const [bakiyeBilgisiGuncel, setBakiyeBilgisiGuncel] = useState('')
 

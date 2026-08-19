@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, BarChart3, Bell, ChevronDown, Database, LineChart, LogOut, Sparkles, X, ReceiptText } from 'lucide-react'
+import { ArrowRight, BarChart3, Bell, ChevronDown, Database, LineChart, LogOut, Sparkles, X, ReceiptText, FilePen } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { supabase } from './lib/supabase'
@@ -9,6 +9,7 @@ import OturumBilgileri from './pages/OturumBilgileri.jsx'
 import ProfilBilgileri from './pages/ProfilBilgileri.jsx'
 import KullaniciListesi from './pages/KullaniciListesi.jsx'
 import KullaniciVarliklari from './pages/kullaniciVarliklari.jsx'
+import FirmaTanimlari from './pages/FirmaTanimlari.jsx'
 import './App.css'
 
 const toastOptions = {
@@ -30,17 +31,17 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
   const routeMap = {
     home: '/home',
     profil: '/profil',
-    kullanici: '/kullanici',
-    KullaniciVarliklari: '/KullaniciVarliklari',
     oturum: '/oturum',
     bakiye: '/bakiye',
+    kullanici: '/kullanici',
+    KullaniciVarliklari: '/KullaniciVarliklari',
+    FirmaTanimlari: '/FirmaTanimlari',
   }
 
   function getRouteFromPath(path) {
-    // Baştaki ve sondaki slash'leri temizler (örn: "/kullanici/" -> "kullanici")
     const temizPath = path.replace(/^\/+|\/+$/g, '')
 
-    const gecerliRotalar = ['home', 'profil', 'kullanici', 'oturum', 'bakiye', 'KullaniciVarliklari']
+    const gecerliRotalar = ['home', 'profil', 'kullanici', 'oturum', 'bakiye', 'KullaniciVarliklari', 'FirmaTanimlari']
 
     return gecerliRotalar.includes(temizPath) ? temizPath : 'home'
   }
@@ -62,6 +63,7 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
         { title: 'Sipariş Takibi', desc: 'Aktif iş ve teslimat akışları', path: 'bakiye' },
         { title: 'Kullanıcı Takibi', desc: 'Sistem Kullanıcılarının Listesi', path: 'kullanici' }, // -> doğrudan 'kullanici' rotasına gider!
         { title: 'Varlık Takibi', desc: 'Varlık Listeniz ve detayları.', path: 'KullaniciVarliklari' },
+        { title: 'Firma Tanımları', desc: 'Firma Tanımlarınız ve Daha Fazlası.', path: 'FirmaTanimlari' },
       ],
     },
     {
@@ -328,10 +330,28 @@ export default function App() {
               </div>
             </div>
           ) : (
-            <button onClick={() => setModalAcikMi(true)} className="login-button" type="button" >
-              Bayi Girişi
-              <ArrowRight size={16} />
-            </button>
+            <div className="nav-group auth-group">
+              <button
+                type="button"
+                className={`auth-trigger nav-trigger ${acikMenu === 'auth' ? 'active' : ''}`}
+                onClick={() => toggleMenu('auth')}
+                aria-expanded={acikMenu === 'auth'}
+              >
+                <span>Giriş</span>
+                <ChevronDown size={15} />
+              </button>
+
+              <div className={`dropdown-panel dropdown-user dropdown-auth ${acikMenu === 'auth' ? 'open' : ''}`}>
+                <button type="button" className="dropdown-item" onClick={() => { setAcikMenu(null); setModalAcikMi(true) }}>
+                  <strong>Bayi Girişi</strong>
+                  <span>Mevcut hesabınla oturum aç</span>
+                </button>
+                <button type="button" className="dropdown-item" onClick={() => { setAcikMenu(null); setModalAcikMi(true) }}>
+                  <strong>Bayi Kaydı Oluştur</strong>
+                  <span>Yeni yetkili hesabı aç</span>
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </header>
@@ -352,6 +372,9 @@ export default function App() {
         )}
         {aktifSayfa === 'KullaniciVarliklari' && (
           <KullaniciVarliklari apiBaseUrl={apiBaseUrl} aktifKullanici={aktifKullanici} onHome={handleAnaSayfaAc} />
+        )}
+        {aktifSayfa === 'FirmaTanimlari' && (
+          <FirmaTanimlari apiBaseUrl={apiBaseUrl} aktifKullanici={aktifKullanici} onHome={handleAnaSayfaAc} />
         )}
       </main>
       <ToastContainer />

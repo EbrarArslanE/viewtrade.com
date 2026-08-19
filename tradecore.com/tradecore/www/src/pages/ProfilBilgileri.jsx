@@ -11,7 +11,7 @@ export default function ProfilBilgileri({ apiBaseUrl, aktifKullanici, onHome }) 
     setListeHatasi('')
 
     try {
-      // const response = await fetch(`${apiBaseUrl}/KullaniciListesi/Listele`)
+      const response = await fetch(`${apiBaseUrl}/KullaniciListesi/Listele`)
       const payload = await response.json()
 
       if (!response.ok || !payload.success) {
